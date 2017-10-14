@@ -81,7 +81,7 @@ public class LoginCheck extends HttpServlet {
                     if (DbConnect.verifyUser(_uname, _pass)) {
                         // if (request.getAttribute("h5") != null) request.removeAttribute("h5");
                         HttpSession session = request.getSession();
-                        session.setAttribute("user", request.getParameter("username"));
+                        session.setAttribute("user", request.getParameter("txtuser"));
                         response.sendRedirect("HomePage.jsp");
                     } else {
                         String msg = "<div class=\"alert alert-danger role=\"alert\">\n" +

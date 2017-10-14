@@ -115,22 +115,30 @@
           <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>  
             <script>
             var commentNo = 0;
+            var header = "";
+            var title = "";
+            var text = "";
+            function updateCardVal() {
+            return ("<div class='card'>" +
+                "<h1 class='card-header'>" + header + "</h1>" + 
+                "<div class='card-block'>" + 
+                "<h3 class='card-title'>" + title + "</h3>" +
+                "<blockquote class='card-text'>" + text + "</blockquote>" +
+                "</div></div>");
+            }
             function addComment(commentBox) {
-                //$("#" + (commentNo + 1)).addClass('hide');
+                var user = document.getElementById('user').value;
                 if (commentBox.value.length > 1) {
-                    var newComment = "<span id='" + ++commentNo + "'>" + commentBox.value + "</span><div class='line'></div>";
+                    var newComment = "<span><b>" + user + " </b>wrote: </span><br /><span id='" + (++commentNo) + "'>" + commentBox.value + "</span><div class='line'></div>";
                     $(newComment).hide().appendTo('#creviews').fadeIn("slow");
                     //document.getElementById('creviews').innerHTML += 
                     commentBox.value = '';
                 }
                 document.getElementById('cmt').blur();
             }
-                
             function getCollegeDetails(name) {
-                console.log("In get()");
                 var xmlhttp=new XMLHttpRequest();
                 $('.tp').removeClass('hide');
-                //xmlhttp.overrideMimeType('text/xml');
                 xmlhttp.onreadystatechange = function()
                 {
                     if(this.readyState === 4 && this.status === 200) {
@@ -144,22 +152,31 @@
                             cContact = data.getElementsByTagName("contact")[0].childNodes[0].nodeValue;
                             document.getElementById("cname").innerHTML = cName;
                             document.getElementById("saddr").innerHTML = cSAddr;
-                            document.getElementById("caddr").innerHTML = "<b>Location:</b><br /><br />" + "<b>" + cName + "</b>" + "<br />" + cAddr;
+                            header = "Location";
+                            title = cName;
+                            text = cAddr;
+                            document.getElementById("caddr").innerHTML = updateCardVal(); 
+                            // document.getElementById("caddr").innerHTML = "<b>Location:</b><br /><br />" + "<b>" + cName + "</b>" + "<br />" + cAddr;
                             courses = data.getElementsByTagName("course");
-                            course = "<b>Courses Offered:</b><br /><br />" + "<ul>";
+                            header = "Courses Offered";
+                            title = "";
+                            course = "<ul>";
+                            // course = "<b>Courses Offered:</b><br /><br />" + "<ul>";
                             for (i = 0; i < courses.length; i++) {
                                 course += "<li>" + courses[i].childNodes[0].nodeValue + "</li>";
                             }
                             course += "</ul>";
+                            text = course;
+                            document.getElementById("cbranch").innerHTML = updateCardVal();
+                            // document.getElementById("cbranch").innerHTML = course;
                             reviews = data.getElementsByTagName("review");
-                            review = "<span><b>Student Reviews:</b><br /><br /></span>";
+                            review = "<div class='line'></div><span><b>Student Reviews:</b><br /><br /></span>";
                             for (i = 0; i < reviews.length; i++) {
                                 review += "<span id='" + ++commentNo + "'>" + reviews[i].childNodes[0].nodeValue + "</span><div class='line'></div>";
                             }
                             //var cmt = "<div class = 'row'><br />" +
                             //            "<div class='col-md-8'><textarea rows="5" cols="6"  id = 'txtarea' ></textarea></div><br /> " + 
                             //            "<div class='col-md-4'><button type = 'submit' class ='btn btn-primary form-control' value='Add Comment' /></div></div>";
-                            document.getElementById("cbranch").innerHTML = course;
                             document.getElementById("creviews").innerHTML = review; // + "<br />"+ cmt;
                             
                             google.charts.load('current', {'packages':['corechart']});
@@ -338,6 +355,8 @@
                     </form>
                 </div>
                 </div>
+
+            <input type="hidden" id="user" value="<%= session.getAttribute("user")%>" />
         </div>
                  <!-- jQuery CDN -->
          <script src="js/jquery-3.2.1.min.js"></script>
