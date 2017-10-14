@@ -25,6 +25,9 @@
 		<h2>Login</h2>
 		</div>
 		<form action="LoginCheck" method="POST">
+                    <div class="input-group">
+                        ${status}
+                    </div>
                     <div class="input-group form-group">
                             <label>Username:</label>
                             <input type="text" autocomplete="off" class ="form-control form" style="border-radius: 5px;" autofocus="autofocus" name="txtuser" placeholder="Username" required/>
@@ -51,7 +54,7 @@
                         </div>
                         <div class="form-group">
                             <input type="password" name = "txtpass" class ="form-control" placeholder="Password" onkeyup= "function() {
-                                <% request.removeAttribute("h5"); %> ;
+                                
                             }" required/>
                         </div>
                         <button type="submit" class ="btn btn-primary form-control">Login</button>
@@ -59,7 +62,6 @@
                         <br />
                     </form>
                     <h5>
-                        ${h5}
                     </h5>
                 </div>
                 </center>
