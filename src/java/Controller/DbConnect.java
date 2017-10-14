@@ -5,12 +5,15 @@
  */
 package Controller;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -59,13 +62,13 @@ public class DbConnect {
         return rs;
     }
     
-    public static boolean insertQuery(List<String> userDetails) {
+    public static boolean registerUser(List<String> userDetails) throws Exception {
         createConnection();
         try {
             String query = "insert into userdetails values (?, ?, ?)";
             pStmt = conn.prepareStatement(query);
             for (int i = 1; i <= userDetails.size(); i++) {
-                pStmt.setString(i, userDetails.get(i - 1));
+                pStmt.setString(i, (i == userDetails.size())? generateHash(userDetails.get(i - 1)) : userDetails.get(i - 1));
             }
             int rValue = pStmt.executeUpdate();
             //System.out.println(rValue);
@@ -73,12 +76,41 @@ public class DbConnect {
             return (rValue == 1);
             //return false;
         } catch (SQLException ex) {
-            try {
                 throw new Exception("User with same name already exists.");
-                //Logger.getLogger(DbConnect.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (Exception ex1) {
-                Logger.getLogger(DbConnect.class.getName()).log(Level.SEVERE, null, ex1);
-            }
+        }
+    }
+
+    public static String generateHash(String input) throws Exception {
+		StringBuilder hash = new StringBuilder();
+
+		try {
+			MessageDigest sha = MessageDigest.getInstance("SHA-1");
+			byte[] hashedBytes = sha.digest(input.getBytes());
+			char[] HEX_CHARS = "0123456789ABCDEF".toCharArray();
+			for (byte b : hashedBytes) {
+				hash.append(HEX_CHARS[(b & 0xF0) >> 4]);
+				hash.append(HEX_CHARS[b & 0x0F]);
+			}
+		} catch (NoSuchAlgorithmException e) {
+			throw new Exception("Error storing into database.");
+		}
+
+		return hash.toString();
+	}
+    
+    
+    public static boolean verifyUser(String username, String password) {
+        createConnection();
+        try {
+            String query = "select Email from userdetails where Username=binary ? and Password= binary ?";
+            pStmt = conn.prepareStatement(query);
+            pStmt.setString(1, username);
+            pStmt.setString(2, generateHash(password));
+            rs = pStmt.executeQuery();
+            boolean isAuthentic = rs.next();
+            closeConnection(rs);
+            return isAuthentic;
+        } catch (Exception e) {
             return false;
         }
     }
@@ -88,6 +120,7 @@ public class DbConnect {
             if (stmt != null) stmt.close();
             if (conn != null) conn.close();
             if (rs != null) rs.close();
+            if (pStmt != null) pStmt.close();
             if (rSet != null) rSet.close();
         } catch (SQLException ex) {
             Logger.getLogger(DbConnect.class.getName()).log(Level.SEVERE, null, ex);

@@ -10,11 +10,14 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.swing.text.html.HTML;
 
 /**
@@ -38,39 +41,53 @@ public class LoginCheck extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/plain;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
+            // To Register User
             if (request.getParameter("email") != null) {
-                if (request.getParameter("password").equals(request.getParameter("password_conf"))) {
-                    if (registerUser(request, response)) {
-                        String msg = "<div class=\"alert alert-success\" role=\"alert\">\n" + "<strong>Registration Successful !</strong>" +
-                                        "  <a href=\"Login.jsp\" class=\"alert-link\">Click here</a> to login.\n" +
-                                        "</div>";
-                        request.setAttribute("status", msg);
-                        request.getRequestDispatcher("register.jsp").forward(request, response);
+                try {
+                    String msg = "";
+                    if (request.getParameter("password").equals(request.getParameter("password_conf"))) {
+                        if (registerUser(request, response)) {
+                            msg = "<div class=\"alert alert-success\" role=\"alert\">\n" + "<strong>Registration "
+                                    + "Successful ! </strong>" +
+                                            "  <a href=\"Login.jsp\" class=\"alert-link\">Click here</a> to login.\n" +
+                                            "</div>";
+                            
+                        } else {              
+                            msg = "<div class=\"alert alert-danger role=\"alert\">\n" +
+                                    "<strong>Registration Failed !</strong> Please try again.\n" +
+                                    "</div>";
+                        }
                     } else {
-                        
-                        String msg = "<div class=\"alert alert-warning role=\"alert\">\n" +
-                                "<strong>Registration Failed !</strong> Please try again.\n" +
-                                "</div>";
-                        request.setAttribute("status", msg);
-                        request.getRequestDispatcher("register.jsp").forward(request, response);
+                        msg = "<div class=\"alert alert-warning role=\"alert\">\n" +
+                            "<strong>Input Error !</strong> Password doesn\'t match.\n" +
+                            "</div>";
                     }
-                } else {
-                    String msg = "<div class=\"alert alert-danger role=\"alert\">\n" +
-                        "<strong>Input Error !</strong> Password doesn\'t match.\n" +
-                        "</div>";
-                        request.setAttribute("status", msg);
-                        request.getRequestDispatcher("register.jsp").forward(request, response);
-                }
-            } else if (request.getParameter("txtuser") != null){
+                    request.setAttribute("status", msg);
+                    request.getRequestDispatcher("register.jsp").forward(request, response);
+                } catch (Exception ex) {
+                    String msg = "<div class=\"alert alert-warning role=\"alert\">\n" +
+                                "<strong>Registration Failed ! </strong>" + ex.getMessage() + "\n" +
+                                "</div>"; 
+                    request.setAttribute("status", msg);
+                    request.getRequestDispatcher("register.jsp").forward(request, response);
+                } 
+            } 
+            // To Login User
+            else if (request.getParameter("txtuser") != null){  
                 try {
                     String _uname = request.getParameter("txtuser");
                     String _pass = request.getParameter("txtpass");
-                    System.out.println(_pass + " " + _uname);
-                    if (_uname.equals("user") && _pass.equals("password")) {
-                        if (request.getAttribute("h5") != null) request.removeAttribute("h5");
+                    // System.out.println(_pass + " " + _uname);
+                    if (DbConnect.verifyUser(_uname, _pass)) {
+                        // if (request.getAttribute("h5") != null) request.removeAttribute("h5");
+                        HttpSession session = request.getSession();
+                        session.setAttribute("user", request.getParameter("username"));
                         response.sendRedirect("HomePage.jsp");
                     } else {
-                        request.setAttribute("h5", "<h6 style=\"color:red;\">Invalid username or password.</h6>");
+                        String msg = "<div class=\"alert alert-danger role=\"alert\">\n" +
+                                "<strong>Login Failed !</strong> Invalid username/password.\n" +
+                                "</div>";
+                        request.setAttribute("status", msg);
                         request.getRequestDispatcher("Login.jsp").forward(request, response);
                         //out.println("Invalid username or password...");
                     }
@@ -82,14 +99,14 @@ public class LoginCheck extends HttpServlet {
     }
     
     protected boolean registerUser(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws ServletException, Exception {
         try {
             List<String> userDetails = new ArrayList<>(3);
             userDetails.add(request.getParameter("username"));
             userDetails.add(request.getParameter("email"));
             userDetails.add(request.getParameter("password"));
             // userDetails.add(request.getParameter("password_conf"));
-            return (DbConnect.insertQuery(userDetails));
+            return (DbConnect.registerUser(userDetails));
         }
         catch (Exception ex){
             throw ex;
