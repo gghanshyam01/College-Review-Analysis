@@ -40,10 +40,14 @@
                 var modal = document.getElementById('myModal');
                 console.log("In openModal()");
                 document.getElementById('sentiment').innerHTML = 'Analyzing Review...';
-                document.getElementById("yes").disabled = true;
-                document.getElementById("no").disabled = true;
-                //if (document.getElementById('comment').value.length > 1) // return;
-                    modal.style.display = "block";
+                $('#yes').prop('disabled', true);
+                $('#no').prop('disabled', true);
+
+                if (document.getElementById('comment').value.length <= 1){
+                    document.getElementById('cmt').blur();
+                    return;
+                }
+                modal.style.display = "block";
                 var xmlhttp=new XMLHttpRequest();
                 var comment = document.getElementById('comment').value;
                 xmlhttp.onreadystatechange=function()
@@ -51,8 +55,10 @@
                     if(this.readyState === 4 && this.status === 200) {
                             senti = this.responseText;
                             document.getElementById("sentiment").innerHTML="<b><i>" + senti + "</i></b>";
-                            document.getElementById("yes").disabled = false;
-                            document.getElementById("no").disabled = false;
+                            $('#yes').prop('disabled', false);
+                            $('#no').prop('disabled', false);
+                            // document.getElementById("yes").disabled = false;
+                            // document.getElementById("no").disabled = false;
                     } else {
                             //document.getElementById("val").innerHTML = "LOADING...";
                     }
@@ -164,11 +170,10 @@
                               ['Sentiment', 'No of Review'],
                               ['Negative Reviews', 2.5 * neg],
                               ['Positive Reviews', 2.5 * pos]
-
                             ]);
 
                               // Optional; add a title and set the width and height of the chart
-                              var options = {
+                            var options = {
                                   title:'Review Summary', 
                                   width:500, 'height':350,
                                   slices: {
@@ -204,10 +209,10 @@
         
         <!-- Bootstrap CSS CDN -->
         <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">-->
-        <link rel="stylesheet" href="css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/bootstrap.min.css" />
         <!-- Our Custom CSS -->
-        <link rel="stylesheet" href ="css/modal.css">
-        <link rel="stylesheet" href="css/homepage.css">
+        <link rel="stylesheet" href ="css/modal.css" />
+        <link rel="stylesheet" href="css/homepage.css" />
     </head>
     <body>
         <div class="wrapper">
@@ -220,7 +225,7 @@
                     <div class="form-group">
                         <div class="input-group margin-bottom-sm">
                             <input type="text" id="clgName" autocomplete="off" class="col-xs-4" style="margin-left: 5px;padding: 0px 10px; width: 375px; height: 45px;" placeholder="Search College" onkeyup="getData(this.value)"/>
-                            <span class="input-group-addon" style="background-color: white; " onclick="getData(document.getElementById('clgName').value)"><i class="fa fa-search fa-lg" aria-hidden="true"></i></span>
+                            <span class="input-group-addon" id="simg" style="background-color: white; " onclick="getData(document.getElementById('clgName').value)"><i class="fa fa-search fa-lg" aria-hidden="true"></i></span>
                             <!--<button id="search" type="button"  style="width: 45px;" class="btn btn-default" onclick="getData(document.getElementById('clgName').value)">
                                     
                             </button>-->
@@ -284,7 +289,9 @@
                 <div class="jumbotron">
                     <h1 id ="cname">CollegeDB | A place to share your views</h1>
                     <h4 id="saddr"></h4>
-                    <div id="piechart"></div>
+                    <div class="row">
+                        <div class="col-md-6" id ="piechart"></div>
+                    </div>
                 </div>
                 <div class="line"></div>
                 <div class="line"></div>

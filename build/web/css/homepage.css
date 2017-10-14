@@ -9,6 +9,10 @@ body {
     background: #fafafa;
 }
 
+#simg:hover {
+    cursor: pointer;
+}
+
 p {
     font-family: 'Poppins', sans-serif;
     font-size: 1.1em;
