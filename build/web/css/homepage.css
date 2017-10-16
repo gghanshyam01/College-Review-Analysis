@@ -45,18 +45,40 @@ a, a:hover, a:focus {
 }
 
 .row {
-    margin: 10px;
-    
-}
-#cname {
-    margin: 15px;
-    margin-left: 0px;
+    padding: 0px;
+    margin: 0px;
 }
 
-#caddr {
-    /*padding: 15px;*/
-    font-size: 20px;
+.container{
+    padding: 0px;
+    margin: 0px;
 }
+.jumbotron {
+    box-shadow: 0 0 20px black;
+}
+#caddr div.card div.card-block {
+    padding: 20px;
+    
+}
+.card-header {
+    border-color: #7386d5;
+}
+.card:hover {
+    box-shadow: 0 0 15px black;
+}
+.card {
+    min-height: 100%;
+    border-color: #7386d5;
+    
+}
+/*#cname {
+    margin: 15px;
+    margin-left: 0px;
+}*/
+
+#caddr {
+    font-size: 20px;
+} 
 
 
 #cbranch {

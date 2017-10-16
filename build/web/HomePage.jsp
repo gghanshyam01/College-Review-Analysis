@@ -119,12 +119,23 @@
             var title = "";
             var text = "";
             function updateCardVal() {
-            return ("<div class='card'>" +
-                "<h1 class='card-header'>" + header + "</h1>" + 
-                "<div class='card-block'>" + 
-                "<h3 class='card-title'>" + title + "</h3>" +
-                "<blockquote class='card-text'>" + text + "</blockquote>" +
-                "</div></div>");
+                return (
+                    "<div class='card'>" +
+                        "<h1 class='card-header'>" + header + "</h1>" + 
+                        "<div class='card-block'>" + 
+                            "<h3 class='card-title'>" + title + "</h3>" +
+                            "<blockquote class='card-text'>" + text + "</blockquote>" +
+                        "</div>" + 
+                    "</div>"
+                );
+            }
+            
+            function balanceHeight(elemID1, elemID2) {
+                if (document.getElementById(elemID1).style.height > document.getElementById(elemID2).style.height) {
+                    document.getElementById(elemID2).style.height = document.getElementById(elemID1).style.height;
+                } else {
+                    document.getElementById(elemID1).style.height = document.getElementById(elemID2).style.height;
+                }
             }
             function addComment(commentBox) {
                 var user = document.getElementById('user').value;
@@ -168,6 +179,8 @@
                             course += "</ul>";
                             text = course;
                             document.getElementById("cbranch").innerHTML = updateCardVal();
+                            //document.getElementById("caddr").style.height = document.getElementById("cbranch").style.height;
+                            // balanceHeight("cbranch", "caddr");
                             // document.getElementById("cbranch").innerHTML = course;
                             reviews = data.getElementsByTagName("review");
                             review = "<div class='line'></div><span><b>Student Reviews:</b><br /><br /></span>";
@@ -269,13 +282,10 @@
                             <a href="#">Contact</a>
                         </li>
                         <li id = "val">
-                            
+
                         </li>
-                        
                     </ul>
-                    
                 </form>
-                    
             </nav>
             
             <!-- Page Content Holder -->
@@ -312,7 +322,7 @@
                 </div>
                 <div class="line"></div>
                 <div class="line"></div>
-                <div class="container">
+                <div class="container" style="margin-right: 0px">
                     
                     <!-- The Modal -->
                     <div id="myModal" class="modal">
@@ -349,7 +359,7 @@
                         </div>
                         <div class = 'row tp hide' >
                             <div class='col-sm-3' style="padding-left: 0px">
-                                <button type = "button" style="min-width: 100%" id = "cmt" class ="btn btn-primary form-control"  onclick="openModal()"><!--onclick="addComment(document.getElementById('comment'))">-->Add Comment</button>
+                                <button type = "button" style="min-width: 100%; margin-top: 15px" id = "cmt" class ="btn btn-primary form-control"  onclick="openModal()"><!--onclick="addComment(document.getElementById('comment'))">-->Add Comment</button>
                             </div>
                         </div>
                     </form>
@@ -358,6 +368,9 @@
 
             <input type="hidden" id="user" value="<%= session.getAttribute("user")%>" />
         </div>
+        <script type="text/javascript">
+            balanceHeight("cbranch", "caddr");
+        </script>
                  <!-- jQuery CDN -->
          <script src="js/jquery-3.2.1.min.js"></script>
          <!-- Bootstrap Js CDN -->
@@ -380,10 +393,5 @@
                  });
              });
          </script>
-
-
-
-
-       
     </body>
 </html>
