@@ -137,19 +137,25 @@
                     document.getElementById(elemID1).style.height = document.getElementById(elemID2).style.height;
                 }
             }
+            
             function addComment(commentBox) {
                 var user = document.getElementById('user').value;
                 if (commentBox.value.length > 1) {
-                    var newComment = "<span><b>" + user + " </b>wrote: </span><br /><span id='" + (++commentNo) + "'>" + commentBox.value + "</span><div class='line'></div>";
+                    header = user;
+                    title = "";
+                    text = "<p style='padding:10px' id='" + (++commentNo) + "'>" + commentBox.value + "</p>";
+                    newComment = updateCardVal();
                     $(newComment).hide().appendTo('#creviews').fadeIn("slow");
                     //document.getElementById('creviews').innerHTML += 
                     commentBox.value = '';
                 }
                 document.getElementById('cmt').blur();
             }
+            
             function getCollegeDetails(name) {
                 var xmlhttp=new XMLHttpRequest();
                 $('.tp').removeClass('hide');
+                $('#label').removeClass('hide');
                 xmlhttp.onreadystatechange = function()
                 {
                     if(this.readyState === 4 && this.status === 200) {
@@ -167,7 +173,7 @@
                             title = cName;
                             text = cAddr;
                             document.getElementById("caddr").innerHTML = updateCardVal(); 
-                            // document.getElementById("caddr").innerHTML = "<b>Location:</b><br /><br />" + "<b>" + cName + "</b>" + "<br />" + cAddr;
+
                             courses = data.getElementsByTagName("course");
                             header = "Courses Offered";
                             title = "";
@@ -179,19 +185,17 @@
                             course += "</ul>";
                             text = course;
                             document.getElementById("cbranch").innerHTML = updateCardVal();
-                            //document.getElementById("caddr").style.height = document.getElementById("cbranch").style.height;
-                            // balanceHeight("cbranch", "caddr");
-                            // document.getElementById("cbranch").innerHTML = course;
+
                             reviews = data.getElementsByTagName("review");
-                            review = "<div class='line'></div><span><b>Student Reviews:</b><br /><br /></span>";
+                            header = "Anonymous User";
+                            title = "";
+                            var top = "";
                             for (i = 0; i < reviews.length; i++) {
-                                review += "<span id='" + ++commentNo + "'>" + reviews[i].childNodes[0].nodeValue + "</span><div class='line'></div>";
+                                text = "<p style='padding:10px' id='" + (++commentNo) + "'>" + reviews[i].childNodes[0].nodeValue + "</p>";
+                                top += updateCardVal();
                             }
-                            //var cmt = "<div class = 'row'><br />" +
-                            //            "<div class='col-md-8'><textarea rows="5" cols="6"  id = 'txtarea' ></textarea></div><br /> " + 
-                            //            "<div class='col-md-4'><button type = 'submit' class ='btn btn-primary form-control' value='Add Comment' /></div></div>";
-                            document.getElementById("creviews").innerHTML = review; // + "<br />"+ cmt;
-                            
+                            document.getElementById("creviews").innerHTML = top;
+
                             google.charts.load('current', {'packages':['corechart']});
                             google.charts.setOnLoadCallback(drawChart);
                             // Draw the chart and set the chart values
@@ -226,6 +230,7 @@
                 xmlhttp.open("POST","http://localhost:8080/CollegeReview/CollegeDetails?collegeName="+ name, true);
                 xmlhttp.send();
             }
+            
             </script>
             <script>
             $(document).ready(function () {
@@ -322,8 +327,7 @@
                 </div>
                 <div class="line"></div>
                 <div class="line"></div>
-                <div class="container" style="margin-right: 0px">
-                    
+                <div class="container" style="margin-right: 0px">  
                     <!-- The Modal -->
                     <div id="myModal" class="modal">
 
@@ -351,15 +355,18 @@
                         <div class="col-md-6" id="cbranch"></div>
                         <div class="col-md-6" id="caddr"></div>
                     </div>
+                    <div class="row hide" id="label">
+                        <span><br /><b style="font-size: 20px">Student Reviews:</b><br /><br /></span>
+                    </div>
                     <div class="row" id="creviews">
                     </div>
                     <form action="ReviewPredictor" method="POST">
                         <div class = 'row tp hide'>
-                            <div class='col-md-8' style="padding-left: 0px"><span><textarea  id = 'comment' rows = '4' class="form-control" style="min-width: 100%" placeholder="Write your review"></textarea></span></div>
+                            <div class='col-md-8' style="padding-left: 0px"><span><textarea  id = 'comment' rows = '4' class="form-control" style="min-width: 100%; margin: 10px;" placeholder="Write your review"></textarea></span></div>
                         </div>
                         <div class = 'row tp hide' >
                             <div class='col-sm-3' style="padding-left: 0px">
-                                <button type = "button" style="min-width: 100%; margin-top: 15px" id = "cmt" class ="btn btn-primary form-control"  onclick="openModal()"><!--onclick="addComment(document.getElementById('comment'))">-->Add Comment</button>
+                                <button type = "button" style="min-width: 100%; margin: 10px;" id = "cmt" class ="btn btn-primary form-control"  onclick="openModal()"><!--onclick="addComment(document.getElementById('comment'))">-->Add Comment</button>
                             </div>
                         </div>
                     </form>

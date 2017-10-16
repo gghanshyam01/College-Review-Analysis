@@ -60,6 +60,10 @@ a, a:hover, a:focus {
     padding: 20px;
     
 }
+#creviews div.card {
+    width: 100%;
+    margin: 10px;
+}
 .card-header {
     border-color: #7386d5;
 }
