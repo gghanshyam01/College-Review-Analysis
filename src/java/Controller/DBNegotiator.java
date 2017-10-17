@@ -37,6 +37,15 @@ public class DBNegotiator extends HttpServlet {
         response.setContentType("text/plain;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             try {
+                if (request.getParameter((String)LoginCheck.session.getAttribute("user")) != null) {
+                    LoginCheck.session.removeAttribute("user");
+                    String msg = "<div class=\"alert alert-success role=\"alert\">\n" +
+                                "<strong>Logout Successful ! </strong>" +
+                                "</div>"; 
+                    request.setAttribute("status", msg);
+                    request.getRequestDispatcher("Login.jsp").forward(request, response);
+                    return;
+                }
                 String TABLE_NAME = "CollegeDetails";
                 String COLUMN_NAME = "CollegeName";
                 StringBuffer sb = new StringBuffer();

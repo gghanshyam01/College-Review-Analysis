@@ -24,7 +24,7 @@ import javax.servlet.http.HttpSession;
  */
 @WebServlet(name = "LoginCheck", urlPatterns = {"/LoginCheck"})
 public class LoginCheck extends HttpServlet {
-
+    static HttpSession session = null;
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -78,7 +78,7 @@ public class LoginCheck extends HttpServlet {
                     // System.out.println(_pass + " " + _uname);
                     if (DbConnect.verifyUser(_uname, _pass)) {
                         // if (request.getAttribute("h5") != null) request.removeAttribute("h5");
-                        HttpSession session = request.getSession();
+                        session = request.getSession();
                         session.setAttribute("user", request.getParameter("txtuser"));
                         response.sendRedirect("HomePage.jsp");
                     } else {

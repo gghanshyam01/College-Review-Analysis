@@ -35,7 +35,7 @@ a, a:hover, a:focus {
     margin-bottom: 40px;
     box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);     
 }
-#sidebarCollapse:hover {
+#sidebarCollapse:hover, #logout:hover {
     cursor: pointer;        
 }
 .navbar-btn {
@@ -55,6 +55,7 @@ a, a:hover, a:focus {
 }
 .jumbotron {
     box-shadow: 0 0 20px black;
+    margin-top: 100px;
 }
 #caddr div.card div.card-block {
     padding: 20px;
@@ -75,6 +76,9 @@ a, a:hover, a:focus {
     border-color: #7386d5;
     
 }
+.navbar-header {
+    width: calc(100% - 100px);
+}
 /*#cname {
     margin: 15px;
     margin-left: 0px;
@@ -84,6 +88,16 @@ a, a:hover, a:focus {
     font-size: 20px;
 } 
 
+#logout {
+    margin-right: 425px;
+    float: right;
+}
+
+
+#logout.active {
+    margin-right: 0px;
+    
+}
 
 #cbranch {
     /*padding: 50px 0px 50px 0px;*/
@@ -179,7 +193,7 @@ a.article, a.article:hover {
 ----------------------------------------------------- */
 #content {
     width: calc(100% - 450px);
-    padding: 40px;
+    padding: 0px 40px 40px 40px;
     min-height: 100vh;
     transition: all 0.3s;
     position: absolute; 

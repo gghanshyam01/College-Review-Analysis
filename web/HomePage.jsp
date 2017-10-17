@@ -231,6 +231,14 @@
                 xmlhttp.send();
             }
             
+            function logOut() {
+                var xmlhttp=new XMLHttpRequest();
+                xmlhttp.onreadystatechange(function () {
+                    
+                });
+                xmlhttp.open("POST", "http://localhost:8080/CollegeReview/DBNegotiator?logout=true", true);
+                xmlhttp.send();
+            }
             </script>
             <script>
             $(document).ready(function () {
@@ -250,6 +258,16 @@
         <link rel="stylesheet" href="css/homepage.css" />
     </head>
     <body>
+        <%
+            response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+            if (session.getAttribute("user") == null) {
+                String msg = "<div class=\"alert alert-warning role=\"alert\">\n" +
+                                "<strong>You're not a developer ;)</strong> You must log-in to access that page.\n" +
+                                "</div>";
+                request.setAttribute("status", msg);
+                request.getRequestDispatcher("Login.jsp").forward(request, response);
+            }
+        %>
         <div class="wrapper">
             <!-- Sidebar Holder -->
             <nav id="sidebar">
@@ -291,20 +309,28 @@
                         </li>
                     </ul>
                 </form>
+
             </nav>
             
             <!-- Page Content Holder -->
             <div id="content">
-                
-                <nav class="navbar navbar-default navbar-fixed-top">
-                    <div class="container-fluid">
+                <form action="DBNegotiator" method="POST">
+                <div class="container-fluid" style="position: fixed; width: 100%; z-index: 2; padding: 0px;">
+                        <nav class="navbar navbar-default navbar-fixed-top">
+                            <div class="navbar-header">
+                                <button type="button" id="sidebarCollapse" class="btn btn-info navbar-btn">
+                                    <i class="glyphicon glyphicon-align-left"></i>
+                                    <span>Toggle Sidebar</span>
+                                </button>
+                                
+                                    <button type="submit" name="<%= session.getAttribute("user")%>" id="logout" class="btn btn-outline-info">
+                                    <span>Logout <%= session.getAttribute("user")%></span>
+                                </button>
+                            </div>
+                                
+                            
+                         </nav>
 
-                        <div class="navbar-header">
-                            <button type="button" id="sidebarCollapse" class="btn btn-info navbar-btn">
-                                <i class="glyphicon glyphicon-align-left"></i>
-                                <span>Toggle Sidebar</span>
-                            </button>
-                        </div>
                         <!--
                         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                             <ul class="nav navbar-nav navbar-right">
@@ -317,7 +343,7 @@
                         -->
                         
                     </div>
-                </nav>
+                </form>
                 <div class="jumbotron">
                     <h1 id ="cname">CollegeDB | A place to share your views</h1>
                     <h4 id="saddr"></h4>
@@ -327,7 +353,7 @@
                 </div>
                 <div class="line"></div>
                 <div class="line"></div>
-                <div class="container" style="margin-right: 0px">  
+                <div class="container">  
                     <!-- The Modal -->
                     <div id="myModal" class="modal">
 
@@ -377,6 +403,7 @@
         </div>
         <script type="text/javascript">
             balanceHeight("cbranch", "caddr");
+            balanceHeight("sidebarCollapse", "logout")
         </script>
                  <!-- jQuery CDN -->
          <script src="js/jquery-3.2.1.min.js"></script>
@@ -390,11 +417,13 @@
                  $("#sidebar").niceScroll({
                      cursorcolor: '#53619d',
                      cursorwidth: 4,
-                     cursorborder: 'none'
+                     cursorborder: '2'
                  });
-
+                 $('#logout').on('click', function() {
+                     
+                 });
                  $('#sidebarCollapse').on('click', function () {
-                     $('#sidebar, #content').toggleClass('active');
+                     $('#sidebar, #logout, #content').toggleClass('active');
                      $('.collapse.in').toggleClass('in');
                      $('a[aria-expanded=true]').attr('aria-expanded', 'false');
                  });
