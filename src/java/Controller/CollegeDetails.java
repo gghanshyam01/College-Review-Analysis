@@ -6,7 +6,6 @@ package Controller;
  * and open the template in the editor.
  */
 
-import Controller.DbConnect;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.ResultSet;

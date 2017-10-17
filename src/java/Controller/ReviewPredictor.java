@@ -51,10 +51,10 @@ public class ReviewPredictor extends HttpServlet {
                 try {
                     //out.print("Analyzing review...");
                     // Instances class is used to select a dataset. The constructor takes the file path as parameter.
-                    BufferedReader br = new BufferedReader(new FileReader("C:\\Users\\GHANSHYAM\\Desktop\\Project\\reviews Segregated.arff"));
+                    BufferedReader br = new BufferedReader(new FileReader("E:\\Practicals\\MCA\\Java\\CollegeReview\\src\\arff file\\reviews Segregated.arff"));
                     Instances trainingData = new Instances(br);
                     trainingData.setClassIndex(trainingData.numAttributes() - 1);
-
+                    br.close();
                     ArrayList<String> classVal = new ArrayList<>(2);
                     classVal.add("neg");
                     classVal.add("pos");
