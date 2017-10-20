@@ -32,13 +32,12 @@
                 xmlhttp.open("POST","http://localhost:8080/CollegeReview/DBNegotiator?cName="+vl + "&t=" + Math.random(),true);
                 xmlhttp.send();
             }
-            // When the user clicks the button, open the modal
             
+            // When the user clicks the button, open the modal
             var modal;
             var senti;
             function openModal() {
                 var modal = document.getElementById('myModal');
-                console.log("In openModal()");
                 document.getElementById('sentiment').innerHTML = 'Analyzing Review...';
                 $('#yes').prop('disabled', true);
                 $('#no').prop('disabled', true);
@@ -68,6 +67,15 @@
                 
             }
             
+            function aboutUs() {
+                    $(".article").removeClass("hide");
+                    document.getElementById("cname").innerHTML = "CollegeDB | A place to share your views";
+                    document.getElementById("piechart").innerHTML = "";
+                    document.getElementById("saddr").innerHTML = "";
+                    $('.container').addClass("hide");
+
+            }
+            
             $(document).ready(function() {
                 
             // Get the modal
@@ -95,7 +103,6 @@
                 modal.style.display = "none";
                 var xmlhttp=new XMLHttpRequest();
                 var url;
-                console.log(isCorrect);
                 if (isCorrect) {
                     url = "http://localhost:8080/CollegeReview/ReviewPredictor?sentiment=" + senti;
                     
@@ -156,9 +163,12 @@
                 var xmlhttp=new XMLHttpRequest();
                 $('.tp').removeClass('hide');
                 $('#label').removeClass('hide');
+                $(".container").removeClass("hide");
                 xmlhttp.onreadystatechange = function()
                 {
                     if(this.readyState === 4 && this.status === 200) {
+                            $(".article").addClass("hide");
+                            //document.getElementsByClassName("jumbotron")[0].innerHTML = "CollegeDB | A place to share your views";
                             data = this.responseXML;
                             var neg = data.getElementsByTagName("neg")[0].childNodes[0].nodeValue;
                             var pos = data.getElementsByTagName("pos")[0].childNodes[0].nodeValue;
@@ -231,22 +241,27 @@
                 xmlhttp.send();
             }
             
-            function logOut() {
-                var xmlhttp=new XMLHttpRequest();
-                xmlhttp.onreadystatechange(function () {
-                    
-                });
-                xmlhttp.open("POST", "http://localhost:8080/CollegeReview/DBNegotiator?logout=true", true);
-                xmlhttp.send();
-            }
             </script>
             <script>
-            $(document).ready(function () {
-                $('#sidebar').niceScroll({
-                    cursorcolor: '#53619d', // Changing the scrollbar color
-                    cursorwidth: 0, // Changing the scrollbar width
-                    cursorborder: 'none' // Removing the scrollbar border
-                });
+                $(document).ready(function () {
+                    $('#sidebar').niceScroll({
+                        cursorcolor: '#53619d', // Changing the scrollbar color
+                        cursorwidth: 0, // Changing the scrollbar width
+                        cursorborder: 'none' // Removing the scrollbar border
+                    });
+                    var xmlhttp = new XMLHttpRequest();
+                    xmlhttp.onreadystatechange = function() {
+                        if(this.readyState === 4 && this.status === 200) {
+                                $(".article").removeClass("hide");
+                                document.getElementsByClassName("article")[0].innerHTML=this.responseText;
+                                //$('.container').addClass("hide");
+                        } else {
+                                //document.getElementsByClassName("container")[0].innerHTML = "LOADING...";
+                        }
+                    };
+                    xmlhttp.open("POST","http://localhost:8080/CollegeReview/About.jsp",true);
+                    xmlhttp.send();
+                
             });
             </script>
         
@@ -288,7 +303,7 @@
                 <form id = "clg" method="POST" action="CollegeDetails">
                     <ul class="list-unstyled components">
                         <li>
-                            <a href="#">About</a>
+                            <a href="#" onclick="aboutUs()">About</a>
                             <!--
                             <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false">Pages</a>
                             <ul class="collapse list-unstyled" id="pageSubmenu">
@@ -353,6 +368,7 @@
                 </div>
                 <div class="line"></div>
                 <div class="line"></div>
+                <div class="article"></div>
                 <div class="container">  
                     <!-- The Modal -->
                     <div id="myModal" class="modal">
