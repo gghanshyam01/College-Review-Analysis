@@ -357,7 +357,7 @@
                         </div>
                         -->
                         
-                    </div>
+                </div>
                 </form>
                 <div class="jumbotron">
                     <h1 id ="cname">CollegeDB | A place to share your views</h1>
@@ -419,7 +419,7 @@
         </div>
         <script type="text/javascript">
             balanceHeight("cbranch", "caddr");
-            balanceHeight("sidebarCollapse", "logout")
+            balanceHeight("sidebarCollapse", "logout");
         </script>
                  <!-- jQuery CDN -->
          <script src="js/jquery-3.2.1.min.js"></script>
