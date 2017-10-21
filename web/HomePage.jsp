@@ -117,7 +117,6 @@
                 xmlhttp.send();
                 addComment(document.getElementById('comment'));
             }
-            
             </script>
           <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>  
             <script>
@@ -435,9 +434,7 @@
                      cursorwidth: 4,
                      cursorborder: '2'
                  });
-                 $('#logout').on('click', function() {
-                     
-                 });
+                 
                  $('#sidebarCollapse').on('click', function () {
                      $('#sidebar, #logout, #content').toggleClass('active');
                      $('.collapse.in').toggleClass('in');

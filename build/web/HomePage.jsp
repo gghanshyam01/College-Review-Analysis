@@ -117,7 +117,6 @@
                 xmlhttp.send();
                 addComment(document.getElementById('comment'));
             }
-            
             </script>
           <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>  
             <script>
@@ -357,7 +356,7 @@
                         </div>
                         -->
                         
-                    </div>
+                </div>
                 </form>
                 <div class="jumbotron">
                     <h1 id ="cname">CollegeDB | A place to share your views</h1>
@@ -419,7 +418,7 @@
         </div>
         <script type="text/javascript">
             balanceHeight("cbranch", "caddr");
-            balanceHeight("sidebarCollapse", "logout")
+            balanceHeight("sidebarCollapse", "logout");
         </script>
                  <!-- jQuery CDN -->
          <script src="js/jquery-3.2.1.min.js"></script>
@@ -435,9 +434,7 @@
                      cursorwidth: 4,
                      cursorborder: '2'
                  });
-                 $('#logout').on('click', function() {
-                     
-                 });
+                 
                  $('#sidebarCollapse').on('click', function () {
                      $('#sidebar, #logout, #content').toggleClass('active');
                      $('.collapse.in').toggleClass('in');
