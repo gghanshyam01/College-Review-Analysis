@@ -7,7 +7,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
-    <head>
+    <head>  
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -73,31 +73,52 @@
                     document.getElementById("piechart").innerHTML = "";
                     document.getElementById("saddr").innerHTML = "";
                     $('.container').addClass("hide");
-
+                    $('#contactPage').addClass("hide");
+            }
+            
+            function contactPage() {
+                $("#contactPage").removeClass("hide");
+                document.getElementById("cname").innerHTML = "CollegeDB | A place to share your views";
+                document.getElementById("piechart").innerHTML = "";
+                document.getElementById("saddr").innerHTML = "";
+                $('.container').addClass("hide");
+                $('.article').addClass("hide");
+                var xmlhttp = new XMLHttpRequest();
+                xmlhttp.onreadystatechange = function() {
+                    if(this.readyState === 4 && this.status === 200) {
+                            $("#contactPage").removeClass("hide");
+                            document.getElementById("contactPage").innerHTML=this.responseText;
+                            //$('.container').addClass("hide");
+                    } else {
+                            //document.getElementsByClassName("container")[0].innerHTML = "LOADING...";
+                    }
+                };
+                xmlhttp.open("POST","http://localhost:8080/CollegeReview/Contact.jsp",true);
+                xmlhttp.send();
             }
             
             $(document).ready(function() {
-                
-            // Get the modal
-            modal = document.getElementById('myModal');
 
-            // Get the button that opens the modal
-            var btn = document.getElementById("cmt");
+                // Get the modal
+                modal = document.getElementById('myModal');
 
-            // Get the <span> element that closes the modal
-            var span = document.getElementsByClassName("close")[0];
+                // Get the button that opens the modal
+                var btn = document.getElementById("cmt");
 
-            // When the user clicks on <span> (x), close the modal
-            span.onclick = function() {
-                modal.style.display = "none";
-            };
+                // Get the <span> element that closes the modal
+                var span = document.getElementsByClassName("close")[0];
 
-            // When the user clicks anywhere outside of the modal, close it
-            window.onclick = function(event) {
-                if (event.target === modal) {
+                // When the user clicks on <span> (x), close the modal
+                span.onclick = function() {
                     modal.style.display = "none";
-                }
-            };
+                };
+
+                // When the user clicks anywhere outside of the modal, close it
+                window.onclick = function(event) {
+                    if (event.target === modal) {
+                        modal.style.display = "none";
+                    }
+                };
             });
             function prediction(isCorrect) {
                 modal.style.display = "none";
@@ -167,6 +188,7 @@
                 {
                     if(this.readyState === 4 && this.status === 200) {
                             $(".article").addClass("hide");
+                            $("#contactPage").addClass("hide");
                             //document.getElementsByClassName("jumbotron")[0].innerHTML = "CollegeDB | A place to share your views";
                             data = this.responseXML;
                             var neg = data.getElementsByTagName("neg")[0].childNodes[0].nodeValue;
@@ -260,8 +282,7 @@
                     };
                     xmlhttp.open("POST","http://localhost:8080/CollegeReview/About.jsp",true);
                     xmlhttp.send();
-                
-            });
+                });
             </script>
         
         <!-- Bootstrap CSS CDN -->
@@ -316,7 +337,7 @@
                             <a href="#">Portfolio</a>
                         </li>
                         <li>
-                            <a href="#">Contact</a>
+                            <a href="#" onclick="contactPage()">Contact</a>
                         </li>
                         <li id = "val">
 
@@ -368,6 +389,7 @@
                 <div class="line"></div>
                 <div class="line"></div>
                 <div class="article"></div>
+                <div id="contactPage"></div>
                 <div class="container">  
                     <!-- The Modal -->
                     <div id="myModal" class="modal">
