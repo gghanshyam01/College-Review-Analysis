@@ -64,14 +64,10 @@ public class DbConnect {
     }
     
     public static boolean registerUser(List<String> userDetails) throws Exception {
-        createConnection();
         try {
             String query = "insert into userdetails values (?, ?, ?)";
-            pStmt = conn.prepareStatement(query);
-            for (int i = 1; i <= userDetails.size(); i++) {
-                pStmt.setString(i, (i == userDetails.size())? generateHash(userDetails.get(i - 1)) : userDetails.get(i - 1));
-            }
-            int rValue = pStmt.executeUpdate();
+            
+            int rValue = insertViaPreparedStatement(query, userDetails, true);
             //System.out.println(rValue);
             closeConnection(rs);
             return (rValue == 1);
@@ -80,7 +76,23 @@ public class DbConnect {
                 throw new Exception("User with same name already exists.");
         }
     }
-
+    
+    public static int insertViaPreparedStatement(String query, List<String> values, boolean performHash) throws Exception {
+        createConnection();
+        pStmt = conn.prepareStatement(query);
+        if (performHash) {
+            for (int i = 1; i <= values.size(); i++) {
+                pStmt.setString(i, (i == values.size())? generateHash(values.get(i - 1)) : values.get(i - 1));
+            }
+        } else {
+            for (int i = 1; i <= values.size(); i++) {
+                pStmt.setString(i, values.get(i - 1));
+            }
+        }
+        
+        return pStmt.executeUpdate();
+    }
+    
     public static String generateHash(String input) throws Exception {
 		StringBuilder hash = new StringBuilder();
 

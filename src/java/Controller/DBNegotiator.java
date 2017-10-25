@@ -39,6 +39,7 @@ public class DBNegotiator extends HttpServlet {
             try {
                 if (request.getParameter((String)LoginCheck.session.getAttribute("user")) != null) {
                     LoginCheck.session.removeAttribute("user");
+                    //LoginCheck.session.invalidate();
                     String msg = "<div class=\"alert alert-success role=\"alert\">\n" +
                                 "<strong>Logout Successful ! </strong>" +
                                 "</div>"; 

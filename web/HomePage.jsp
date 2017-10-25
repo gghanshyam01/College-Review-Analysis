@@ -83,6 +83,7 @@
                 document.getElementById("saddr").innerHTML = "";
                 $('.container').addClass("hide");
                 $('.article').addClass("hide");
+                
                 /*
                 var xmlhttp = new XMLHttpRequest();
                 xmlhttp.onreadystatechange = function() {
@@ -337,9 +338,6 @@
                                 <li><a href="#">Page 3</a></li>
                             </ul>
                             -->
-                        </li>
-                        <li>
-                            <a href="#">Portfolio</a>
                         </li>
                         <li>
                             <a href="#" onclick="contactPage()">Contact</a>

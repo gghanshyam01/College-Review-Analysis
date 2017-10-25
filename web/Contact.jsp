@@ -17,6 +17,8 @@
        <script 
          src = "https://storage.googleapis.com/code.getmdl.io/1.0.6/material.min.js">
       </script>
+      <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" />
+        <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"></script>
       <link rel = "stylesheet" 
          href = "https://storage.googleapis.com/code.getmdl.io/1.0.6/material.indigo-pink.min.css">
       <link rel = "stylesheet" 
@@ -50,6 +52,7 @@
         }
         
         </style>
+        
    </head>
    <body>
     <center>
@@ -63,29 +66,26 @@
                 <div class="mdl-typography--subhead mdl-color-text--grey-600">
                     Fill in your contact details followed by the message and we shall get in touch with as soon as possible
                 </div>
-               </div>
-               
-                  
-                     <form action ="Contact.jsp" method="POST">
+               </div>   
+                     <form action ="ReviewPredictor" method="POST">
                          
                            <div style="padding: 1em 3em 3em;">
-                         
+                               <div class="input-group">${response}</div>
                   <div class = "mdl-textfield mdl-js-textfield mdl-textfiled--full-width mdl-textfield--floating-label">
-                      <input class = "mdl-textfield__input" type = "text" id = "text4">
-                     <label class = "mdl-textfield__label" for = "text4">Email</label>
+                      <input class = "mdl-textfield__input" type = "text" id = "eid" name="email" required/>
+                     <label class = "mdl-textfield__label" for = "eid">Email</label>
                   </div>
                          </div>
                          <div style="padding: 1em 3em 3em;">
                      <div class = "mdl-textfield mdl-js-textfield  mdl-textfield--floating-label">
-                     <textarea class = "mdl-textfield__input" type = "text" rows =  "2" 
-                        id = "text7"></textarea>
-                     <label class = "mdl-textfield__label" for = "text7">Message</label>
+                     <textarea class = "mdl-textfield__input" type = "text" rows =  "2" name="feedback"
+                               id = "feedbk" required/></textarea>
+                     <label class = "mdl-textfield__label" for = "feedbk">Message</label>
                      </div>
                          </div>
                          <div style="padding: 1em 3em; text-align: right;">
-                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">Submit</button>
+                             <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" type="submit">Submit</button>
                         </div>
-                     
                    </form>
                   </div>
                        </div>

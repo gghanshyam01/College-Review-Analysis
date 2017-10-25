@@ -10,6 +10,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -43,12 +46,24 @@ public class ReviewPredictor extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/plain;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
-            //System.out.println("in rp.java" + request.getParameter("sentiment"));
-            if (request.getParameter("sentiment") != null) {
+            // No considerable reason to have 2-if conds but this may increase performance i believe ;)
+            if (request.getParameter("sentiment") != null) { // Coming from js function prediction() 
                 addComment(request, response, request.getParameter("sentiment"));
-            } else if (request.getParameter("review") != null){
+            } else if(request.getParameter("feedback") != null) {
+                try {
+                    addFeedback(request, response);
+                } catch (Exception ex) {
+                    String msg = "<div class=\"alert alert-danger role=\"alert\">\n" +
+                                    "<strong>Error receiving feedback !</strong>." + ex.toString()+ "\n" +
+                                    "</div>";
+                    request.setAttribute("response", msg);
+                    request.getRequestDispatcher("Contact.jsp").forward(request, response);
+                }
+            }
+            else if (request.getParameter("review") != null){ // Coming from js function openModal().
                 comment = request.getParameter("review");
                 try {
+                    
                     //out.print("Analyzing review...");
                     // Instances class is used to select a dataset. The constructor takes the file path as parameter.
                     BufferedReader br = new BufferedReader(new FileReader("E:\\Practicals\\MCA\\Java\\CollegeReview\\src\\arff file\\reviews Segregated.arff"));
@@ -111,6 +126,7 @@ public class ReviewPredictor extends HttpServlet {
     protected void addComment(HttpServletRequest request, HttpServletResponse response, String sentiment)
             throws ServletException, IOException {
         System.out.println("Sentiment: " + sentiment);
+        // TODO add comment into DB
     }
     
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -152,4 +168,29 @@ public class ReviewPredictor extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
+    private void addFeedback(HttpServletRequest request, HttpServletResponse response)
+    throws Exception {
+        PrintWriter out = response.getWriter();
+        List<String> values = new ArrayList<> (3);
+        String username = LoginCheck.session.getAttribute("user").toString();
+        if (username == null) throw new Exception("Session Expired, Login again to continue.");
+        values.add(username);
+        values.add(request.getParameter("email"));
+        values.add(request.getParameter("feedback"));
+        String query = "insert into feedbackdetails values (?, ?, ?)";
+        if (DbConnect.insertViaPreparedStatement(query, values, false) == 1) {
+            DbConnect.closeConnection(null);
+            String msg = "<div class=\"alert alert-success role=\"alert\">\n" +
+                                    "<strong>Feedback Received !</strong> We will get back to you shortly.\n" +
+                                    "</div>";
+            request.setAttribute("response", msg);
+        } else {
+            DbConnect.closeConnection(null);
+            String msg = "<div class=\"alert alert-danger role=\"alert\">\n" +
+                                    "<strong>Error receiving feedback !</strong> Please try again or contact administrator.\n" +
+                                    "</div>";
+            request.setAttribute("response", msg);        
+        }
+        request.getRequestDispatcher("Contact.jsp").forward(request, response);
+    }
 }
