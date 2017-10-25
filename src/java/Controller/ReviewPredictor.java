@@ -6,7 +6,9 @@
 package Controller;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -42,6 +44,7 @@ public class ReviewPredictor extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     String comment = "";
+    static String filePath = "E:\\Practicals\\MCA\\Java\\CollegeReview\\src\\arff file\\reviews Segregated.arff";
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/plain;charset=UTF-8");
@@ -66,14 +69,14 @@ public class ReviewPredictor extends HttpServlet {
                     
                     //out.print("Analyzing review...");
                     // Instances class is used to select a dataset. The constructor takes the file path as parameter.
-                    BufferedReader br = new BufferedReader(new FileReader("E:\\Practicals\\MCA\\Java\\CollegeReview\\src\\arff file\\reviews Segregated.arff"));
+                    BufferedReader br = new BufferedReader(new FileReader("C:\\Users\\GHANSHYAM\\Desktop\\Project\\reviews Segregated.arff"));
                     Instances trainingData = new Instances(br);
                     trainingData.setClassIndex(trainingData.numAttributes() - 1);
                     br.close();
                     ArrayList<String> classVal = new ArrayList<>(2);
                     classVal.add("neg");
                     classVal.add("pos");
-
+                    
                     Attribute attr1 = new Attribute(trainingData.attribute(0).name(), (ArrayList<String>)null);
                     Attribute attr2 = new Attribute(trainingData.attribute(1).name(), classVal);
 
@@ -126,6 +129,14 @@ public class ReviewPredictor extends HttpServlet {
     protected void addComment(HttpServletRequest request, HttpServletResponse response, String sentiment)
             throws ServletException, IOException {
         System.out.println("Sentiment: " + sentiment);
+        // Adding user review into the trainingData file
+        
+        BufferedWriter bW = new BufferedWriter(new FileWriter("C:\\Users\\GHANSHYAM\\Desktop\\Project\\reviews Segregated.arff", true));
+        PrintWriter writer = new PrintWriter(bW);
+        writer.println("'" + comment + "'," + sentiment);
+        writer.close();
+        
+        
         // TODO add comment into DB
     }
     
