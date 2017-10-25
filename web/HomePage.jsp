@@ -83,6 +83,7 @@
                 document.getElementById("saddr").innerHTML = "";
                 $('.container').addClass("hide");
                 $('.article').addClass("hide");
+                /*
                 var xmlhttp = new XMLHttpRequest();
                 xmlhttp.onreadystatechange = function() {
                     if(this.readyState === 4 && this.status === 200) {
@@ -95,6 +96,7 @@
                 };
                 xmlhttp.open("POST","http://localhost:8080/CollegeReview/Contact.jsp",true);
                 xmlhttp.send();
+                */
             }
             
             $(document).ready(function() {
@@ -270,6 +272,8 @@
                         cursorwidth: 0, // Changing the scrollbar width
                         cursorborder: 'none' // Removing the scrollbar border
                     });
+                    $('#contactPage').addClass("hide");
+                    /*
                     var xmlhttp = new XMLHttpRequest();
                     xmlhttp.onreadystatechange = function() {
                         if(this.readyState === 4 && this.status === 200) {
@@ -282,6 +286,7 @@
                     };
                     xmlhttp.open("POST","http://localhost:8080/CollegeReview/About.jsp",true);
                     xmlhttp.send();
+                    */
                 });
             </script>
         
@@ -362,10 +367,7 @@
                                     <span>Logout <%= session.getAttribute("user")%></span>
                                 </button>
                             </div>
-                                
-                            
                          </nav>
-
                         <!--
                         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                             <ul class="nav navbar-nav navbar-right">
@@ -375,8 +377,7 @@
                                 <li><a href="#">Page</a></li>
                             </ul>
                         </div>
-                        -->
-                        
+                        -->  
                 </div>
                 </form>
                 <div class="jumbotron">
@@ -388,9 +389,9 @@
                 </div>
                 <div class="line"></div>
                 <div class="line"></div>
-                <div class="article"></div>
-                <div id="contactPage"></div>
-                <div class="container">  
+                <iframe class="article" src="About.jsp" scrolling="no" frameborder="0" style="width:100%; height: 700px; position: relative;"></iframe>
+                <iframe id="contactPage" src="Contact.jsp" scrolling="no" frameborder="0" style="width:100%; height: 700px; position: relative;"></iframe>
+                <div class="container">
                     <!-- The Modal -->
                     <div id="myModal" class="modal">
 
