@@ -139,8 +139,7 @@
         <div class ="qoute-container">
             <blockquote>
                 <p><b>College Review Analysis</b> is an online platform where one can find reviews about particular college in terms of Placement, Faculties, Infrastructure etc.</p>
-                <cite> Ghanshyam Gupta
-                </cite>
+                <cite> Ghanshyam Gupta & Ashish Mishra</cite>
             </blockquote>
         </div>
             

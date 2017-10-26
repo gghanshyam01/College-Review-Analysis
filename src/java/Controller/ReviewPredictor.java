@@ -57,7 +57,7 @@ public class ReviewPredictor extends HttpServlet {
                     addFeedback(request, response);
                 } catch (Exception ex) {
                     String msg = "<div class=\"alert alert-danger role=\"alert\">\n" +
-                                    "<strong>Error receiving feedback !</strong>." + ex.toString()+ "\n" +
+                                    "<strong>Error receiving feedback! </strong>" + ex.getMessage()+ "\n" +
                                     "</div>";
                     request.setAttribute("response", msg);
                     request.getRequestDispatcher("Contact.jsp").forward(request, response);
@@ -69,7 +69,7 @@ public class ReviewPredictor extends HttpServlet {
                     
                     //out.print("Analyzing review...");
                     // Instances class is used to select a dataset. The constructor takes the file path as parameter.
-                    BufferedReader br = new BufferedReader(new FileReader("C:\\Users\\GHANSHYAM\\Desktop\\Project\\reviews Segregated.arff"));
+                    BufferedReader br = new BufferedReader(new FileReader(filePath));
                     Instances trainingData = new Instances(br);
                     trainingData.setClassIndex(trainingData.numAttributes() - 1);
                     br.close();
@@ -131,13 +131,13 @@ public class ReviewPredictor extends HttpServlet {
         System.out.println("Sentiment: " + sentiment);
         // Adding user review into the trainingData file
         
-        BufferedWriter bW = new BufferedWriter(new FileWriter("C:\\Users\\GHANSHYAM\\Desktop\\Project\\reviews Segregated.arff", true));
-        PrintWriter writer = new PrintWriter(bW);
-        writer.println("'" + comment + "'," + sentiment);
-        writer.close();
-        
-        
-        // TODO add comment into DB
+        BufferedWriter bW = new BufferedWriter(new FileWriter(filePath, true));
+        try (PrintWriter writer = new PrintWriter(bW)) {
+            writer.println("'" + comment + "'," + sentiment);
+            writer.close();
+
+            // TODO add comment into DB
+        }
     }
     
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -183,8 +183,9 @@ public class ReviewPredictor extends HttpServlet {
     throws Exception {
         PrintWriter out = response.getWriter();
         List<String> values = new ArrayList<> (3);
+        //System.out.println(LoginCheck.session.getAttribute("user"));
+        if (null == LoginCheck.session.getAttribute("user")) throw new NullPointerException("Session Expired, Login again to continue.");
         String username = LoginCheck.session.getAttribute("user").toString();
-        if (username == null) throw new Exception("Session Expired, Login again to continue.");
         values.add(username);
         values.add(request.getParameter("email"));
         values.add(request.getParameter("feedback"));
