@@ -308,6 +308,7 @@
                 request.setAttribute("status", msg);
                 request.getRequestDispatcher("Login.jsp").forward(request, response);
             }
+            
         %>
         <div class="wrapper">
             <!-- Sidebar Holder -->
