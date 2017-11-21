@@ -5,7 +5,7 @@
  */
 package Controller;
 
-import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
+//import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
@@ -14,11 +14,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
 /**
  *
@@ -72,7 +70,7 @@ public class DbConnect {
             closeConnection(rs);
             return (rValue == 1);
             //return false;
-        } catch (MySQLIntegrityConstraintViolationException ex) {
+        } catch (SQLException ex) {
                 throw new Exception("User with same name already exists.");
         }
     }

@@ -18,8 +18,8 @@
     </head> <%--8fa88b #1c6396 #6d7fcc--%>
     <body style="background-color: #1c6396;">    
         <div class="container">
-            <br /> <br />
-            <h1 style="color: #ccdce8">CollegeDB | A place to share your views</h1> <br />
+            <br /> <br /><center>
+                <h1 style="color: #ccdce8">College Review Sentiment Analysis</h1> <br /></center>
             <hr style = "border-width: 10px"/> 
             <div class="header">
 		<h2>Login</h2>

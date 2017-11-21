@@ -20,8 +20,10 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import weka.classifiers.bayes.NaiveBayes;
 import weka.classifiers.functions.SMO;
 import weka.classifiers.meta.FilteredClassifier;
+import weka.classifiers.trees.RandomForest;
 import weka.core.Attribute;
 import weka.core.DenseInstance;
 import weka.core.Instances;
@@ -45,6 +47,7 @@ public class ReviewPredictor extends HttpServlet {
      */
     String comment = "";
     static String filePath = "E:\\Practicals\\MCA\\Java\\CollegeReview\\src\\arff file\\reviews Segregated.arff";
+
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/plain;charset=UTF-8");
@@ -52,21 +55,20 @@ public class ReviewPredictor extends HttpServlet {
             // No considerable reason to have 2-if conds but this may increase performance i believe ;)
             if (request.getParameter("sentiment") != null) { // Coming from js function prediction() 
                 addComment(request, response, request.getParameter("sentiment"));
-            } else if(request.getParameter("feedback") != null) {
+            } else if (request.getParameter("feedback") != null) {
                 try {
                     addFeedback(request, response);
                 } catch (Exception ex) {
-                    String msg = "<div class=\"alert alert-danger role=\"alert\">\n" +
-                                    "<strong>Error receiving feedback! </strong>" + ex.getMessage()+ "\n" +
-                                    "</div>";
+                    String msg = "<div class=\"alert alert-danger role=\"alert\">\n"
+                            + "<strong>Error receiving feedback! </strong>" + ex.getMessage() + "\n"
+                            + "</div>";
                     request.setAttribute("response", msg);
                     request.getRequestDispatcher("Contact.jsp").forward(request, response);
                 }
-            }
-            else if (request.getParameter("review") != null){ // Coming from js function openModal().
+            } else if (request.getParameter("review") != null) { // Coming from js function openModal().
                 comment = request.getParameter("review");
                 try {
-                    
+
                     //out.print("Analyzing review...");
                     // Instances class is used to select a dataset. The constructor takes the file path as parameter.
                     BufferedReader br = new BufferedReader(new FileReader(filePath));
@@ -76,8 +78,8 @@ public class ReviewPredictor extends HttpServlet {
                     ArrayList<String> classVal = new ArrayList<>(2);
                     classVal.add("neg");
                     classVal.add("pos");
-                    
-                    Attribute attr1 = new Attribute(trainingData.attribute(0).name(), (ArrayList<String>)null);
+
+                    Attribute attr1 = new Attribute(trainingData.attribute(0).name(), (ArrayList<String>) null);
                     Attribute attr2 = new Attribute(trainingData.attribute(1).name(), classVal);
 
                     ArrayList<Attribute> attributes = new ArrayList<>(trainingData.numAttributes());
@@ -94,7 +96,6 @@ public class ReviewPredictor extends HttpServlet {
 
                     // System.out.println(trainingData);
                     // setClassIndex() is used to refer the column no. which has the answer.
-
                     StringToWordVector stwv = new StringToWordVector();
                     stwv.setInputFormat(trainingData);
                     stwv.setIDFTransform(true);
@@ -105,20 +106,18 @@ public class ReviewPredictor extends HttpServlet {
                     // Creating a classifier, in my case, im using Support Vector Machines.
                     FilteredClassifier fc = new FilteredClassifier();
                     fc.setFilter(stwv);
-                    fc.setClassifier(new SMO());
+                    fc.setClassifier(new RandomForest());
                     fc.buildClassifier(trainingData);
 
                     // Now im building that classifier from my training dataset.
-
-
                     // My 'testdata' has user-entered values(see above)).
                     // Im passing it to the classifier to get prediction.
                     double prediction = fc.classifyInstance(inst.instance(0));
 
-                    out.print(inst.classAttribute().value((int)prediction));
+                    out.print(inst.classAttribute().value((int) prediction));
                     // Here Im just displaying my predictions using a Dialog box.
                     //JOptionPane.showMessageDialog(this, inst.classAttribute().value((int)prediction), "Result", JOptionPane.INFORMATION_MESSAGE);
-                } catch(Exception ex) {
+                } catch (Exception ex) {
                     out.print("Error Occurred: " + ex.toString());
                     //JOptionPane.showMessageDialog(this, ex.getMessage(), ex.getClass().toString(), JOptionPane.ERROR_MESSAGE);
                 }
@@ -130,16 +129,34 @@ public class ReviewPredictor extends HttpServlet {
             throws ServletException, IOException {
         System.out.println("Sentiment: " + sentiment);
         // Adding user review into the trainingData file
-        
+
         BufferedWriter bW = new BufferedWriter(new FileWriter(filePath, true));
         try (PrintWriter writer = new PrintWriter(bW)) {
             writer.println("'" + comment + "'," + sentiment);
             writer.close();
-
-            // TODO add comment into DB
+            try {
+                String collName = CollegeDetails.collegeName;
+                if (collName.indexOf("'") != -1) {
+                    String[] temp = collName.split("'");
+                    collName = temp[0];
+                    collName += "''" + temp[1];
+                }
+                List<String> reviewDetails = new ArrayList<>();
+                reviewDetails.add(collName);
+                reviewDetails.add(comment);
+                reviewDetails.add((String)LoginCheck.session.getAttribute("user"));
+                String query = "insert into collegereviews values (?, ?, ?)";
+                DbConnect.insertViaPreparedStatement(query, reviewDetails, false);
+                
+                
+                
+                System.out.println(reviewDetails);
+            } catch (Exception ex) {
+                System.out.println("Failed to add user reviews into the college.");
+            }
         }
     }
-    
+
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
@@ -180,11 +197,13 @@ public class ReviewPredictor extends HttpServlet {
     }// </editor-fold>
 
     private void addFeedback(HttpServletRequest request, HttpServletResponse response)
-    throws Exception {
+            throws Exception {
         PrintWriter out = response.getWriter();
-        List<String> values = new ArrayList<> (3);
+        List<String> values = new ArrayList<>(3);
         //System.out.println(LoginCheck.session.getAttribute("user"));
-        if (null == LoginCheck.session.getAttribute("user")) throw new NullPointerException("Session Expired, Login again to continue.");
+        if (null == LoginCheck.session.getAttribute("user")) {
+            throw new NullPointerException("Session Expired, Login again to continue.");
+        }
         String username = LoginCheck.session.getAttribute("user").toString();
         values.add(username);
         values.add(request.getParameter("email"));
@@ -192,16 +211,16 @@ public class ReviewPredictor extends HttpServlet {
         String query = "insert into feedbackdetails values (?, ?, ?)";
         if (DbConnect.insertViaPreparedStatement(query, values, false) == 1) {
             DbConnect.closeConnection(null);
-            String msg = "<div class=\"alert alert-success role=\"alert\">\n" +
-                                    "<strong>Feedback Received !</strong> We will get back to you shortly.\n" +
-                                    "</div>";
+            String msg = "<div class=\"alert alert-success role=\"alert\">\n"
+                    + "<strong>Feedback Received !</strong> We will get back to you shortly.\n"
+                    + "</div>";
             request.setAttribute("response", msg);
         } else {
             DbConnect.closeConnection(null);
-            String msg = "<div class=\"alert alert-danger role=\"alert\">\n" +
-                                    "<strong>Error receiving feedback !</strong> Please try again or contact administrator.\n" +
-                                    "</div>";
-            request.setAttribute("response", msg);        
+            String msg = "<div class=\"alert alert-danger role=\"alert\">\n"
+                    + "<strong>Error receiving feedback !</strong> Please try again or contact administrator.\n"
+                    + "</div>";
+            request.setAttribute("response", msg);
         }
         request.getRequestDispatcher("Contact.jsp").forward(request, response);
     }

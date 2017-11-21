@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 @WebServlet(name = "CollegeDetails", urlPatterns = {"/CollegeDetails"})
 public class CollegeDetails extends HttpServlet {
+    static String collegeName = null;
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         ResultSet rs = null;
@@ -30,7 +31,7 @@ public class CollegeDetails extends HttpServlet {
         try (PrintWriter out = response.getWriter()) {
             try {
                 //String collegeName = "";
-                String collegeName = request.getParameter("collegeName");
+                collegeName = request.getParameter("collegeName");
                 //System.out.println(collegeName + "\n" + request.getParameter("collegeName"));
                 if (collegeName.indexOf("'") != -1) {
                     String[] temp = collegeName.split("'");
@@ -43,7 +44,7 @@ public class CollegeDetails extends HttpServlet {
                 String query = "select * from " + TABLE_NAME + " where " + COLUMN_NAME + " like '%" + collegeName + "%'";
                 rs = DbConnect.selectQuery(query);
                 rset = DbConnect.selectQuery("select Courses from CollegeCourses where " + COLUMN_NAME + " like '%" + collegeName + "%'");
-                rsetR = DbConnect.selectQuery("select Reviews from CollegeReviews where " + COLUMN_NAME + " like '%" + collegeName + "%'");
+                rsetR = DbConnect.selectQuery("select Reviews, User from CollegeReviews where " + COLUMN_NAME + " like '%" + collegeName + "%'");
                 StringBuffer strBuffer = new StringBuffer();
                 if (rs.next()) {
                     strBuffer = strBuffer.append("<college>\n<name>" + rs.getString(COLUMN_NAME) + "</name>\n" +
@@ -64,7 +65,8 @@ public class CollegeDetails extends HttpServlet {
                 
                 //request.setAttribute("cdetail", strBuffer.toString());
                 while (rsetR.next()) {
-                    strBuffer = strBuffer.append("<review>" + rsetR.getString("Reviews") + "</review>\n");
+                    strBuffer = strBuffer.append("<review>" + rsetR.getString("Reviews") + "</review>\n" +
+                            "<user>" + rsetR.getString("User") + "</user>");
                 }
                 strBuffer.append("</college>");
                 out.write(strBuffer.toString());

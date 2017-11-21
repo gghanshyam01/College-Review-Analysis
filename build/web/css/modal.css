@@ -39,6 +39,10 @@ and open the template in the editor.
     animation-duration: 0.4s
 }
 
+div.modal-body h3 {
+    color: #7386d5;
+}
+
 /* Add Animation */
 @-webkit-keyframes animatetop {
     from {top:-300px; opacity:0} 
@@ -67,7 +71,7 @@ and open the template in the editor.
 
 .modal-header {
     padding: 2px 16px;
-    background-color: #5cb85c;
+    background-color: #7386d5;
     color: white;
     float: left;
 }
@@ -76,7 +80,7 @@ and open the template in the editor.
 
 .modal-footer {
     padding: 5px 16px 5px;
-    background-color: #5cb85c;
+    background-color: #7386d5;
     color: white;
 
 }
